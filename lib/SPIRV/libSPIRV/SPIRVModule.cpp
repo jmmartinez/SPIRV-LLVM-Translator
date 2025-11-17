@@ -312,6 +312,7 @@ public:
   SPIRVTypeBool *addBoolType() override;
   SPIRVTypeFloat *addFloatType(unsigned BitWidth,
                                unsigned FloatingPointEncoding) override;
+  std::vector<SPIRVTypeFloat *> getFloatTypes() override;
   SPIRVTypeFunction *addFunctionType(SPIRVType *,
                                      const std::vector<SPIRVType *> &) override;
   SPIRVTypeInt *addIntegerType(unsigned BitWidth) override;
@@ -1111,6 +1112,22 @@ SPIRVTypeFloat *SPIRVModuleImpl::addFloatType(unsigned BitWidth,
   auto *Ty = new SPIRVTypeFloat(this, getId(), BitWidth, FloatingPointEncoding);
   FloatTypeMap[Desc] = Ty;
   return addType(Ty);
+}
+
+std::vector<SPIRVTypeFloat *> SPIRVModuleImpl::getFloatTypes() {
+  std::vector<SPIRVTypeFloat *> All(FloatTypeMap.size());
+  std::transform(FloatTypeMap.begin(), FloatTypeMap.end(), All.begin(),
+                 [](auto &Pair) { return Pair.second; });
+  std::sort(All.begin(), All.end(),
+            [](const SPIRVTypeFloat *L, const SPIRVTypeFloat *R) {
+              if (L->getBitWidth() < R->getBitWidth())
+                return true;
+              if (L->getBitWidth() == R->getBitWidth() &&
+                  L->getFloatingPointEncoding() < R->getFloatingPointEncoding())
+                return true;
+              return false;
+            });
+  return All;
 }
 
 SPIRVType *SPIRVModuleImpl::addPointerType(SPIRVStorageClassKind StorageClass,

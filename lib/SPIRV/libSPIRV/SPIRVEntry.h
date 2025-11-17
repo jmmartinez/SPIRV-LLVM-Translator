@@ -668,6 +668,14 @@ public:
     WordLiterals.push_back(Z);
     updateModuleVersion();
   }
+  // Complete constructor for FPFastMathDefault
+  SPIRVExecutionMode(Op OC, SPIRVEntry *TheTarget,
+                     SPIRVExecutionModeKind TheExecMode, SPIRVWord FloatTy,
+                     SPIRVWord Mode)
+      : SPIRVAnnotation(OC, TheTarget, 5), ExecMode(TheExecMode) {
+    WordLiterals.push_back(FloatTy);
+    WordLiterals.push_back(Mode);
+  }
   // Complete constructor for VecTypeHint, SubgroupSize, SubgroupsPerWorkgroup
   SPIRVExecutionMode(Op OC, SPIRVEntry *TheTarget,
                      SPIRVExecutionModeKind TheExecMode, SPIRVWord Code)
@@ -734,6 +742,17 @@ public:
       : SPIRVExecutionMode(OpExecutionModeId, TheTarget, TheExecMode, Code) {
     updateModuleVersion();
   }
+
+  // Complete constructor for FPFastMathDefault
+  SPIRVExecutionModeId(SPIRVEntry *TheTarget,
+                       SPIRVExecutionModeKind TheExecMode, SPIRVWord FloatTyId,
+                       SPIRVWord ModeConstantId)
+      : SPIRVExecutionMode(OpExecutionModeId, TheTarget, TheExecMode, FloatTyId,
+                           ModeConstantId) {
+    assert(TheExecMode == ExecutionModeFPFastMathDefault);
+    updateModuleVersion();
+  }
+
   // Incomplete constructor
   SPIRVExecutionModeId() : SPIRVExecutionMode() {}
   VersionNumber getRequiredSPIRVVersion() const override {
@@ -893,6 +912,9 @@ public:
     case CapabilityGroupNonUniformClustered:
       return VersionNumber::SPIRV_1_3;
 
+    case CapabilityFloatControls2:
+      return VersionNumber::SPIRV_1_2;
+
     case CapabilityNamedBarrier:
     case CapabilitySubgroupDispatch:
     case CapabilityPipeStorage:
@@ -921,6 +943,8 @@ public:
       return ExtensionID::SPV_INTEL_function_variants;
     case internal::CapabilityBFloat16ArithmeticINTEL:
       return ExtensionID::SPV_INTEL_bfloat16_arithmetic;
+    case CapabilityFloatControls2:
+      return ExtensionID::SPV_KHR_float_controls2;
     default:
       return {};
     }

@@ -272,6 +272,7 @@ public:
   virtual SPIRVTypeArray *addArrayType(SPIRVType *, SPIRVValue *) = 0;
   virtual SPIRVTypeBool *addBoolType() = 0;
   virtual SPIRVTypeFloat *addFloatType(unsigned, unsigned = FPEncodingMax) = 0;
+  virtual std::vector<SPIRVTypeFloat *> getFloatTypes() = 0;
   virtual SPIRVTypeFunction *
   addFunctionType(SPIRVType *, const std::vector<SPIRVType *> &) = 0;
   virtual SPIRVTypeImage *addImageType(SPIRVType *,
