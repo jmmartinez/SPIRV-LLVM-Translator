@@ -1255,12 +1255,23 @@ static void applyFPFastMathModeDecorations(const SPIRVValue *BV,
       FMF.setNoSignedZeros();
     if (V & FPFastMathModeAllowRecipMask)
       FMF.setAllowReciprocal();
+    static_assert(FPFastMathModeAllowContractFastINTELMask ==
+                  FPFastMathModeAllowContractMask);
     if (V & FPFastMathModeAllowContractFastINTELMask)
       FMF.setAllowContract();
+    static_assert(FPFastMathModeAllowReassocINTELMask ==
+                  FPFastMathModeAllowReassocMask);
     if (V & FPFastMathModeAllowReassocINTELMask)
       FMF.setAllowReassoc();
     if (V & FPFastMathModeFastMask)
       FMF.setFast();
+    if (V & FPFastMathModeAllowTransformMask) {
+      // AllowTransform requires the AllowContract and AllowReassoc bits to be
+      // set.
+      assert(FMF.allowContract() && FMF.allowReassoc() &&
+             "The FPFastMathMode AllowTransform requires AllowContract and "
+             "AllowReassoc to be set");
+    }
     Inst->setFastMathFlags(FMF);
   }
 }
