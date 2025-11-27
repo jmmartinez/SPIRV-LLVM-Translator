@@ -42,6 +42,7 @@
 #define SPIRVREADER_H
 
 #include "SPIRVBuiltinHelper.h"
+#include "SPIRVEnum.h"
 #include "SPIRVInternal.h"
 #include "SPIRVModule.h"
 
@@ -269,6 +270,12 @@ private:
   void
   transFunctionPointerCallArgumentAttributes(SPIRVValue *BV, CallInst *CI,
                                              SPIRVTypeFunction *CalledFnTy);
+
+  using FunctionAndTypeIdPair = std::pair<Function*, SPIRVWord>;
+  using FunctionToFastMathFlagsMap = DenseMap<FunctionAndTypeIdPair, SPIRVWord>;
+  FunctionToFastMathFlagsMap Func2FastMathFlags;
+  void translateFastMathFlags(SPIRVFunction *BF, Function *F);
+  void applyFPFastMathModeDecorations(const SPIRVValue *BV, Instruction *Inst); 
 }; // class SPIRVToLLVM
 
 } // namespace SPIRV

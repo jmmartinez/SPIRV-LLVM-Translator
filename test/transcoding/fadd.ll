@@ -48,6 +48,7 @@ entry:
   %r5 = fadd arcp float %a, %b
   %r6 = fadd fast float %a, %b
   %r7 = fadd nnan ninf float %a, %b
+  %r8 = fadd contract float %a, %b
   ret void
 }
 

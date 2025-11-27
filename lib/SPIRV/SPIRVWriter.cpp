@@ -1,4 +1,3 @@
-//===- SPIRVWriter.cpp - Converts LLVM to SPIR-V ----------------*- C++ -*-===//
 //
 //                     The LLVM/SPIR-V Translator
 //
